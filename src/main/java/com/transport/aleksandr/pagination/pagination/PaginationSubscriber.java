@@ -13,14 +13,14 @@ public class PaginationSubscriber extends ListScrollSubscriber {
     private int visibleThreshold = 5; // The minimum amount of items to have below your current scroll position before loading more.
     private LinearLayoutManager linearLayoutManager;
 
-    public PaginationSubscriber(LinearLayoutManager linearLayoutManager, PaginationListener paginationListener) {
-        this.linearLayoutManager = linearLayoutManager;
+    public PaginationSubscriber(PaginationListener paginationListener) {
         this.paginationListener = paginationListener;
     }
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
+        createLayoutManagerIfNeeded(recyclerView);
 
         visibleItemCount = recyclerView.getChildCount();
         totalItemCount = linearLayoutManager.getItemCount();
@@ -42,7 +42,21 @@ public class PaginationSubscriber extends ListScrollSubscriber {
         }
     }
 
+    private void createLayoutManagerIfNeeded(RecyclerView recyclerView) {
+        if (linearLayoutManager != null) {
+            return;
+        }
+
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            linearLayoutManager = (LinearLayoutManager) layoutManager;
+        } else {
+            throw new IllegalArgumentException("Current realisation works only with LinearLayoutManager");
+        }
+    }
+
     public interface PaginationListener {
         void onLoadMore(int totalItemCount);
     }
 }
+
