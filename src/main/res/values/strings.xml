@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">pagination</string>
+    <string name="empty_list">Empty</string>
+</resources>
